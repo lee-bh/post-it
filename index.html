@@ -1,0 +1,72 @@
+<idoctype html>
+<head>
+	<style>
+		body,section,input{margin:0; padding:0;}
+		.addPostWrap{width:250px; position: fixed; right:30px; bottom:30px; }
+		.post{width:250px;height:180px; background: yellow;border:none;font-size: 2em;padding:20px;}
+		#postit{ width:250px; background: blue; color:white; border:none; height:20px;}
+		#postit:hover{background: red;}
+		#bBut{position:fixed;top:0;right:0;}
+	</style>
+</head>
+<body id="body">
+	<input type="color" onchange="body.style.background=this.value;" id="bBut">
+	<section class="addPostWrap">
+		<input type="color" id="backgroundColor" value="#ffff00">&nbsp;
+		<input type="color" id="textColor" value="#000000">
+		<textarea placeholder="type text here" id="addPost" class="post"></textarea>
+		<input type="button" value="Post It!" onclick="duplicate();" id="postit">
+	</section>
+	<script>
+	var bColor = "yellow";
+	var tColor = "gray";
+	var text = "";
+	var number = 0;
+	backgroundColor.onchange = function(){
+		bColor = event.target.value;
+		addPost.style.background =  event.target.value;
+	}
+
+	textColor.onchange = function(){
+		tColor = event.target.value;
+		addPost.style.color = event.target.value;
+	}
+
+	function duplicate(){
+		number++;
+		var k = document.createElement("textarea");
+		k.setAttribute("class","post");
+		k.style.background = bColor;
+		k.style.color = tColor;
+		k.style.position = "absolute";
+		k.style.left = number*10 + "px";
+		k.style.top = number*10 + "px";
+		k.style.cursor = "pointer";
+		k.innerHTML = addPost.value;
+		k.onmousedown = startDrag;
+		k.onmouseup = stopDrag;
+		document.getElementsByTagName("body")[0].appendChild(k);
+	}
+
+//여기서부터는 드래그 앤 드롭 소스
+	var startX, startY;
+	var plotX, plotY;
+
+	function startDrag(){
+		var objX = parseInt(window.getComputedStyle(event.target, null).getPropertyValue("left"),10);
+		var objY = parseInt(window.getComputedStyle(event.target, null).getPropertyValue("top"),10);
+		startX = event.clientX - objX;
+		startY = event.clientY - objY;
+		document.addEventListener("mousemove", follow);
+	}
+
+	function stopDrag(){
+		document.removeEventListener("mousemove", follow);
+	}
+
+	function follow(){
+		event.target.style.left = (event.clientX - startX) + "px";
+		event.target.style.top = (event.clientY - startY) + "px";
+	};
+	</script>
+<body>
